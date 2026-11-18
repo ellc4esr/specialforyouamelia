@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Birthday Letter For You ❤️</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #ffe6e9;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Layar Pembuka (Trigger Autoplay Musik) */
+        #opening-screen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #ffe6e9 0%, #ffccd5 100%);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        #opening-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .envelope-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .open-btn {
+            background-color: #ff4d6d;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 77, 109, 0.4);
+            margin-top: 20px;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .open-btn:hover {
+            background-color: #c9184a;
+            transform: scale(1.05);
+        }
+
+        /* Hujan Hati */
+        .heart-fall {
+            position: absolute;
+            top: -10px;
+            font-size: 20px;
+            color: #ff4d6d;
+            animation: fall linear infinite;
+            z-index: 1;
+            pointer-events: none; 
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(105vh) rotate(360deg);
+            }
+        }
+
+        /* Tombol Musik Melayang di Pojok */
+        .music-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff4d6d;
+            border: 2px solid #ff4d6d;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(255, 77, 109, 0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.2s;
+        }
+
+        /* Container Utama */
+        .card-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            padding: 20px 20px 70px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.2);
+            max-width: 440px;
+            width: 90%;
+            height: 520px;
+            z-index: 10;
+            border: 2px solid #ffccd5;
+            position: relative;
+        }
+
+        /* Halaman Surat */
+        .page {
+            display: none;
+            height: 100%;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .page.active {
+            display: flex;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Kotak Teks yang Bisa di-Scroll */
+        .text-scroll-box {
+            height: 100%;
+            overflow-y: auto;
+            padding: 5px 10px;
+            text-align: left;
+        }
+
+        .text-scroll-box::-webkit-scrollbar {
+            width: 5px;
+        }
+        .text-scroll-box::-webkit-scrollbar-thumb {
+            background-color: #ffccd5;
+            border-radius: 10px;
+        }
+
+        .avatar {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #ff4d6d;
+            margin: 0 auto 10px auto;
+            display: block;
+        }
+
+        /* Penyesuaian Ukuran Foto Kolase agar Lebih Pas & Proporsional */
+        .collage-img {
+            width: auto;
+            max-width: 100%;
+            height: 350px;
+            object-fit: contain;
+            border-radius: 12px;
+            border: 2px solid #ffccd5;
+            margin: 5px auto;
+            display: block;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            color: #c9184a;
+            font-size: 1.25rem;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        h2 {
+            color: #ff4d6d;
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        p {
+            color: #555;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        /* Tombol Navigasi Menempel di Bawah Kotak */
+        .nav-buttons {
+            position: absolute;
+            bottom: 15px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #ffe6e9;
+            padding-top: 10px;
+            background: rgba(255, 255, 255, 0.98);
+            z-index: 999;
+        }
+
+        .btn {
+            background-color: #ff4d6d;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(255, 77, 109, 0.3);
+            transition: 0.2s;
+            pointer-events: auto;
+        }
+
+        .btn:hover {
+            background-color: #c9184a;
+        }
+
+        .btn:disabled {
+            background-color: #ffccd5;
+            cursor: not-allowed;
+            box-shadow: none;
+            opacity: 0.6;
+        }
+
+        .page-indicator {
+            font-size: 0.85rem;
+            color: #888;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Layar Pembuka Amplop -->
+    <div id="opening-screen">
+        <div class="envelope-icon">💌</div>
+        <h1 style="font-size: 1.5rem; margin-bottom: 8px;">Ada Surat Spesial Untukmu ❤️</h1>
+        <p style="color: #777; max-width: 300px;">Pastikan volume HP/laptop kamu nyala ya sebelum dibuka...</p>
+        <button class="open-btn" onclick="openLetter()">Buka Surat ✨</button>
+    </div>
+
+    <!-- Elemen Audio & Tombol Musik -->
+    <audio id="bgMusic" src="lagu.mp3" autoplay loop></audio>
+    <button class="music-btn" id="musicToggleBtn" onclick="toggleMusic()">⏸️ Jeda Musik</button>
+
+    <div id="heart-container"></div>
+
+    <div class="card-container">
+        
+        <!-- HALAMAN 1 (Cover Pembuka) -->
+        <div class="page active" id="page-1">
+            <div class="text-scroll-box" style="text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                <img src="sayangku.png" alt="Foto Sayangku" class="avatar">
+                <h1>Happy 23th Birthday, Sayang! ❤️</h1>
+                <p>Sebuah surat spesial untuk perempuan paling istimewa di hidupku.</p>
+                <p style="color: #ff4d6d; font-weight: bold; margin-top: 15px;">👉 Klik tombol "Selanjutnya" di bawah untuk membaca suratnya ya!</p>
+            </div>
+        </div>
+
+        <!-- HALAMAN 2 (Isi Longtext Panjang Kamu) -->
+        <div class="page" id="page-2">
+            <h2>Halaman Pertama 💌</h2>
+            <div class="text-scroll-box">
+                <p>happy birthdayyyy sayangggggg, selamat bertambah usiaa perempuan paling istimewa di hidup akuuu!! 🥳🤍😘</p>
+                <p>hari ini adalah hari spesial buat seseorang yang sangat berarti buat akuu, seseorang yang kehadirannya membawa banyak warna dalam hidup akuu, seseorang yang mungkin ga selalu sadar betapa berharganya dia buat orang-orang di sekitarnya, terutama buat akuuu. pertama-tama aku mau bilang terima kasih karena kamuu sudah bertahan sejauh ini, sudah melewati banyak hal, sudah berusaha menghadapi hari-hari yang mungkin ga selalu mudah, dan tetap menjadi diri kamu yang akuu kenal dan sayanggi. aku tau perjalanan hidup kamu ga selalu menyenangkan, ada hari-hari ketika kamu cape, sedih, kecewa, banyak pikiran, bahkan mungkin ada saatnya kamu ngerasa semuanya berat. tapi lihattt, kamuuu berhasil sampai di hari ini, dan aku bangga banget sama kamuuu sayanggg.</p>
+                <p>di umur kamu yang sekarang, aku berdoa semoga semua hal baik selalu datang menghampiri kamuuu. semoga kesehatan selalu menyertai setiap langkah kamu, semoga rezeki kamu dilancarkan, segala urusan dipermudah, segala keinginan baik kamu satu per satu bisa terwujud, dan semoga apa pun yang sedang kamu perjuangkan sekarang bisa membuahkan hasil yang indah nantinya. aku juga berharap kamu selalu dikelilingi orang-orang yang tulus menyayangi kamu, orang-orang yang ga cuma hadir ketika kamu bahagia, tetapi juga tetap ada ketika kamu sedang berada di titik terendah. semoga kamu ga perlu terlalu sering memendam kesedihan sendirian dan selalu punya alasan untuk tersenyum setiap harinya.</p>
+                <p>sayanggg, aku juga mau bilang kalau aku bangga sama perempuan yang satu ini. mungkin aku ga selalu bisa melihat semua perjuangan yang kamu lewati, mungkin aku ga selalu tau apa yang sedang kamu pikirkan, dan mungkin terkadang aku juga masih kurang dalam memahami kamu. tapi percayalah, aku menghargai setiap usaha kamu, setiap hal kecil yang kamu lakukan, setiap perjuangan yang mungkin ga pernah kamu ceritakan ke siapa pun. kamu ga harus selalu terlihat kuat di depan semua orang, kamu juga boleh cape, boleh istirahat, boleh nangis, dan boleh cerita ketika ada sesuatu yang mengganggu pikiran kamu. jangan pernah merasa harus menghadapi semuanya sendirian yaa sayanggg.</p>
+                <p>terima kasih juga karena sudah hadir di hidup akuu. terima kasih sudah memberikan banyak cerita, kenangan, perhatian, dan kasih sayang selama kita bersama. aku mungkin bukan orang yang selalu bisa memberikan hal-hal sempurna buat kamu, masih banyak sikap dan perkataan aku yang perlu diperbaiki, tapi aku ingin terus belajar menjadi seseorang yang lebih baik dalam memperlakukan kamuuu. aku pengen kamu juga bisa merasakan bahagia, merasa dihargai, merasa didengarkan, dan merasa bahwa kehadiran kamu benar-benar berarti.</p>
+                <p>di hari ulang tahun kamu ini, aku ga cuma berharap kamu bahagia hari ini saja, tetapi juga di hari-hari berikutnya. semoga senyum kamu ga gampang hilang karena masalah, semoga hati kamu selalu punya ruang untuk hal-hal baik, dan semoga kamu semakin mencintai diri sendiri. jangan terlalu keras sama diri kamu sendiri yaa ayy, kamu sudah melakukan banyak hal sejauh ini dan kamu pantas mendapatkan kebahagiaan dari setiap usaha yang sudah kamu lakukan.</p>
+                <p>terakhir, aku mau bilang sekali lagi, happy birthday sayanggggg. terima kasih sudah dilahirkan ke dunia ini, terima kasih sudah menjadi perempuan dengan segala kelebihan dan kekurangan yang punya, dan terima kasih karena sudah menjadi bagian dari cerita hidup akuuu. semoga umur yang baru ini membawa banyak kebahagiaan, pengalaman indah, kesempatan baru, dan hal-hal yang selama ini kamu doakan. semoga semua air mata kamu diganti dengan banyak alasan untuk tersenyum, semua rasa cape kamu diganti dengan keberhasilan, dan semua doa baik kamu menemukan jalannya untuk menjadi kenyataan.</p>
+                <p style="font-weight: bold; color: #ff4d6d;">aku sayanggg banget sama kamuuu. sekali lagi, selamat ulang tahun perempuan kesayangankuuu. bahagia selalu yaaa, sehat selalu, panjang umur, dan jangan pernah lupa kalau kamu adalah seseorang yang sangat berharga. i love you so muchhh, sayangggg!! 🤍🎂😘</p>
+            </div>
+        </div>
+
+        <!-- HALAMAN 3 -->
+        <div class="page" id="page-3">
+            <h2>Halaman Kedua ✨</h2>
+            <div class="text-scroll-box" style="text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                <p>Aku akan selalu ada di sini buat nemenin kamu dalam kondisi apapun. Jangan pernah merasa sendirian ya, karena ada aku yang selalu mendukungmu sepenuh hati. ❤️</p>
+            </div>
+        </div>
+
+        <!-- HALAMAN 4 -->
+        <div class="page" id="page-4">
+            <h2>Halaman Ketiga 🌹</h2>
+            <div class="text-scroll-box" style="text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                <p>Tetaplah jadi perempuan yang kuat, ceria, dan berhati lembut seperti yang aku kenal selama ini.</p>
+                <p>Senyuman kamu itu berharga banget buat aku, jadi tolong jangan lupa untuk terus bahagia yaa. 😊</p>
+            </div>
+        </div>
+
+        <!-- HALAMAN 5 -->
+        <div class="page" id="page-5">
+            <h2>Halaman Terakhir 💖</h2>
+            <div class="text-scroll-box" style="text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                <p>Sekali lagi, selamat ulang tahun ya cintaku. Semoga hubungan kita selalu diberkahi kebahagiaan.</p>
+                <p style="font-size: 1rem; color: #ff4d6d; font-weight: bold; margin-top: 15px;">I love you so much, kemarin, hari ini, dan selamanya! 🥰❤️</p>
+            </div>
+        </div>
+
+        <!-- HALAMAN 6 (Foto Cantik Dia) -->
+        <div class="page" id="page-6">
+            <h2>Spesial Untukmu Cantik ✨</h2>
+            <div class="text-scroll-box" style="text-align: center;">
+                <p style="margin-bottom: 6px;">Cantik banget kesayangannya siapa sih ini? 🥰</p>
+                <img src="kolase.png" alt="Foto Cantik" class="collage-img">
+            </div>
+        </div>
+
+        <!-- Tombol Navigasi Bawah -->
+        <div class="nav-buttons">
+            <button class="btn" id="prevBtn" type="button" onclick="changePage(-1)" disabled>Sebelumnya</button>
+            <span class="page-indicator" id="pageIndicator">1 dari 6</span>
+            <button class="btn" id="nextBtn" type="button" onclick="changePage(1)">Selanjutnya</button>
+        </div>
+
+    </div>
+
+    <script>
+        const music = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicToggleBtn');
+        let isPlaying = false;
+
+        // Coba autoplay saat halaman dimuat (jika diizinkan browser)
+        window.addEventListener('DOMContentLoaded', () => {
+            music.play().then(() => {
+                isPlaying = true;
+                updateMusicButton();
+            }).catch(() => {
+                isPlaying = false;
+                updateMusicButton();
+            });
+        });
+
+        // Fungsi saat tombol "Buka Surat" diklik
+        function openLetter() {
+            document.getElementById('opening-screen').classList.add('hidden');
+            music.play().then(() => {
+                isPlaying = true;
+                updateMusicButton();
+            }).catch(err => console.log(err));
+        }
+
+        function updateMusicButton() {
+            if (isPlaying) {
+                musicBtn.innerHTML = "⏸️ Jeda Musik";
+                musicBtn.style.background = "#ff4d6d";
+                musicBtn.style.color = "white";
+            } else {
+                musicBtn.innerHTML = "🎵 Putar Musik";
+                musicBtn.style.background = "white";
+                musicBtn.style.color = "#ff4d6d";
+            }
+        }
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                isPlaying = false;
+            } else {
+                music.play();
+                isPlaying = true;
+            }
+            updateMusicButton();
+        }
+
+        // Animasi Hujan Hati
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart-fall');
+            const symbols = ['❤️', '💖', '🌸', '✨', '💕'];
+            heart.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.getElementById('heart-container').appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+        setInterval(createHeart, 300);
+
+        // Logika Perpindahan Slide (Total 6 Halaman)
+        let currentPage = 1;
+        const totalPages = 6;
+
+        function changePage(direction) {
+            const currentElement = document.getElementById(`page-${currentPage}`);
+            if (currentElement) {
+                currentElement.classList.remove('active');
+            }
+            
+            currentPage += direction;
+
+            if (currentPage < 1) currentPage = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+
+            const nextElement = document.getElementById(`page-${currentPage}`);
+            if (nextElement) {
+                nextElement.classList.add('active');
+            }
+
+            document.getElementById('pageIndicator').innerText = `${currentPage} dari ${totalPages}`;
+
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            prevBtn.disabled = (currentPage === 1);
+            
+            if (currentPage === totalPages) {
+                nextBtn.innerText = "Selesai ❤️";
+            } else {
+                nextBtn.innerText = "Selanjutnya";
+            }
+        }
+    </script>
+</body>
+</html>
